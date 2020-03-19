@@ -4,10 +4,13 @@
 #include "Node.h"
 
 void getInput(char* in); //Gets console input, stores into in
-void read(Node* root, char* in); //Gets file input, stores into in, sequentially adds into rbt
+void read(Node* &root, char* in); //Gets file input, stores into in, sequentially adds into rbt
 int getAction(char* in); //Gets input and decides on a specific number corresponding to an action
-void add(Node* &current, int toAdd); //Insert int into tree
-void print(Node* current); //Prints the tree
+void insert(Node* &current, int toAdd); //Insert int into tree 
+void correct(Node* &current); //Corrects the added node TODO
+void rotatate(Node* &current); //Part of rotation TODO
+void add(Node* current, char* in); //Enter a number, which gets insert()ed into tree
+void print(Node* current, int depth); //Prints the tree
 void help(); //Prints list of commands
 
 using namespace std;
@@ -35,14 +38,13 @@ int main(){
       switch(getAction(in)){
         //Add
       case 2:
-        cout << "Ok, please enter the number that you would like to add." << endl;
-        getInput(in);
-        add(root, atoi(in));
-        cout << "\"" << atoi(in) << "\" has been added to the tree." << endl;
+        add(root, in);
         break;
         //Print
       case 3:
-        print(root);
+        print(root, 0);
+        //Reset text color
+        cout << "\033[0m\n" << endl;
         break;
         //Help
       case 4:
@@ -87,7 +89,7 @@ void getInput(char* in){
 }
 
 //This function asks for file input name and sets the in variable equal to it
-void read(Node* root, char* in){
+void read(Node* &root, char* in){
   ifstream stream;
   while(true){
     cout << "Please enter the name of your file." << endl;
@@ -106,7 +108,7 @@ void read(Node* root, char* in){
   for(int a = 0; a <= inLen; ++a){
     if(in[a] == ' ' || a == inLen){
       //Pass into insert function
-      add(root, atoi(buffer));
+      insert(root, atoi(buffer));
       //Then reset counter and buffer
       buffer = new char[4];
       counter = 0;
@@ -142,14 +144,87 @@ int getAction(char* in){
   }
 }
 
+
+void insert(Node* &current, int toAdd){
+  //Root case
+  if(current == NULL){
+    current = new Node(toAdd);
+    //Set color to black
+    current->setColor(true);
+    return;
+  }
+  //If number to add is greater than current node
+  if(toAdd > current->getValue()){
+    Node* right = current->getRight();
+    //If there is a right subtree
+    if(right != NULL){
+      //Recurse
+      insert(right, toAdd);
+    }else{ //Otherwise, just add
+      current->setRight(new Node(toAdd));
+      //Set parent 
+      current->getRight()->setParent(current);
+      //Might need to call correct here
+    }
+  }else{ //If number to add is less than or equal to current node
+    Node* left = current->getLeft();
+    //If there is a left subtree
+    if(left != NULL){
+      insert(left, toAdd);
+    }else{ //Otherwise, just recurse
+      current->setLeft(new Node(toAdd));
+      //Set parent 
+      current->getLeft()->setParent(current);
+      //Might need to call correct here
+    }
+  }
+}
+
 //Inserts int into tree
-void add(Node* &current, int toAdd){
+void correct(Node* &current){
+  //New nodes are always inserted as red (false)
+
+  //Case 1: Parent is black
+
+  //Case 2: Parent and uncle are red
+
+  //Case 3: Uncle is black (triangle)
+
+  //Case 4: Uncle is black (line)
   return;
 }
 
-//Tries to print all nodes in the red black tree, with color, sideways
-void print(Node* current){
-  
+void add(Node* root, char* in){
+  cout << "Ok, please enter the number that you would like to add." << endl;
+  getInput(in);
+  insert(root, atoi(in));
+  cout << "\"" << atoi(in) << "\" has been added to the tree." << endl;
+}
+
+//Tries to print all nodes in the red black tree, with color, sideways, using inorder traversal
+void print(Node* current, int depth){
+  //If null, just leave!
+  if(current == NULL){
+    return;
+  }
+  //Recurse to the the right
+  print(current->getRight(), depth+1);
+  //Print current node
+  for(int a = 0; a < depth; ++a){
+    cout << "    ";
+  }
+  //Set corresponding color
+  if(current->getColor()){
+    //Red
+    cout << "\033[1;31m";
+  }else{
+    //Black (but actually gold lol)
+    cout << "\033[1;33m";
+  }
+  //Print node and reset color
+  cout << current->getValue() << "\n" << endl;
+  //Recurse to the left
+  print(current->getLeft(), depth+1);
 }
 
 //Prints a list of all commands and their functions
