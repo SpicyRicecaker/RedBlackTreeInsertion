@@ -54,7 +54,31 @@ void Node::setParent(Node* newParent){
   parent = newParent;
 }
 
-//Getters and setters for 
+//Getters for grandparent
+Node* Node::getGrandParent(){
+  //If parent isn't null
+  if(parent != NULL){
+    return parent->getParent();
+  }
+  return NULL;
+}
+
+//Getters for uncle
+Node* Node::getUncle(){
+  //If the grandparent isn't null
+  if(this->getGrandParent() != NULL){
+    //Return the opposite of what isn't the parent of parent
+    if(this->getGrandParent()->getLeft() == this->getGrandParent()){
+      return this->getGrandParent()->getRight();
+    }else{
+      return this->getGrandParent()->getLeft();
+    }
+  }
+  return NULL;
+}
+
+
+//Getters and setters for color
 bool Node::getColor(){
   return color;
 }
