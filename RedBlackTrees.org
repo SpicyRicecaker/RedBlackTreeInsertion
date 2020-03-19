@@ -50,4 +50,5 @@
    - Right (Node*)
    - Parent (Node*)
    - Color (bool, false for red, true for black)
+** File input
    
