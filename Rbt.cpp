@@ -1,10 +1,11 @@
 #include <iostream>
 #include <cstring>
 #include <fstream>
-//#include "Node.h"
+#include "Node.h"
 
 void getInput(char* in); //Gets console input, stores into in
 void getFileInput(char* in); //Gets file input, stores into in
+void insert(Node* &current, int toAdd); //Insert int into tree
 
 using namespace std;
 
@@ -13,6 +14,9 @@ int main(){
   //Variable that stores user input
   char inArr[999];
   char* in = &inArr[0];
+
+  //Root node of the red black tree
+  Node* root = NULL;
 
   //We should have a program loop
   bool running = true;
@@ -26,9 +30,8 @@ int main(){
     int inLen = strlen(in);
     for(int a = 0; a <= inLen; ++a){
       if(in[a] == ' ' || a == inLen){
-        //insert(batoi(buffer))
-        //debug
-        cout << atoi(buffer) << endl;
+        //Pass into insert function
+        insert(root, atoi(buffer));
         //Then reset counter and buffer
         buffer = new char[4];
         counter = 0;
@@ -71,4 +74,9 @@ void getFileInput(char* in){
     }
     cout << "File not found. Please make sure your file name is correct." << endl;
   }
+}
+
+//Inserts int into tree
+void insert(Node* &current, int toAdd){
+  return;
 }
