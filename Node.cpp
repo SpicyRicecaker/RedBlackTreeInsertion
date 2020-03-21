@@ -47,7 +47,11 @@ void Node::setRight(Node* newRight){
 
 //Getters and setters for parent node
 Node* Node::getParent(){
-  return parent;
+  if(this != NULL){
+    return parent;
+  }else{
+    return NULL;
+  }
 }
 
 void Node::setParent(Node* newParent){
@@ -56,11 +60,7 @@ void Node::setParent(Node* newParent){
 
 //Getters for grandparent
 Node* Node::getGrandParent(){
-  //If parent isn't null
-  if(parent != NULL){
-    return parent->getParent();
-  }
-  return NULL;
+  return this->getParent()->getParent();
 }
 
 //Getters for uncle

@@ -8,6 +8,10 @@ void read(Node* &root, char* in); //Gets file input, stores into in, sequentiall
 int getAction(char* in); //Gets input and decides on a specific number corresponding to an action
 void insert(Node* &current, int toAdd); //Insert int into tree 
 void correct(Node* &current); //Corrects the added node TODO
+void correctCase1(Node* &current); //Root case
+void correctCase2(Node* &current); //Parent is black
+void correctCase3(Node* &current); //Parent is red (so it's not the root) and Uncle is red
+void correctCase4(Node* &current); //Parent is red and Uncle is black (triangle and line)
 void rotatate(Node* &current); //Part of rotation TODO
 void add(Node* current, char* in); //Enter a number, which gets insert()ed into tree
 void print(Node* current, int depth); //Prints the tree
@@ -149,7 +153,7 @@ void insert(Node* &current, int toAdd){
   //Root case
   if(current == NULL){
     current = new Node(toAdd);
-    //Set color to black
+    //Set color to black, not in correct() cause I'm lazy
     current->setColor(true);
     return;
   }
@@ -165,6 +169,7 @@ void insert(Node* &current, int toAdd){
       //Set parent 
       current->getRight()->setParent(current);
       //Might need to call correct here
+      correct(current);
     }
   }else{ //If number to add is less than or equal to current node
     Node* left = current->getLeft();
@@ -176,21 +181,28 @@ void insert(Node* &current, int toAdd){
       //Set parent 
       current->getLeft()->setParent(current);
       //Might need to call correct here
+      correct(current);
     }
   }
 }
 
-//Inserts int into tree
+//Tries to repair the tree after the insertion
 void correct(Node* &current){
   //New nodes are always inserted as red (false)
 
-  //Case 1: Parent is black
-
-  //Case 2: Parent and uncle are red
-
-  //Case 3: Uncle is black (triangle)
-
-  //Case 4: Uncle is black (line)
+  //This is the root case
+  if(current->getParent() == NULL){
+    correctCase1(current);
+    //This is when the parent is black
+  }else if(current->getParent()->getColor()){
+    correctCase2(current);
+    //This is when the uncle is red
+  }else if(current->getUncle()->getColor() == false){
+    correctCase3(current);
+    //This is when the uncle is black
+  }else{
+    correctCase4(current);
+  }
   return;
 }
 
@@ -230,4 +242,21 @@ void print(Node* current, int depth){
 //Prints a list of all commands and their functions
 void help(){
   cout << "\n----------\nEnter \"add\" to add a number to the tree,\n\"print\" to print the tree,\nor \"quit\" to exit the modding tree phase.\nType \"help\" again to reprint this list.\n----------\n" << endl;
+}
+
+//Root case
+void correctCase1(Node* &current){
+  cout << "Root case! (change color and we're done!)" << endl;
+}
+//Parent is black
+void correctCase2(Node* &current){
+  cout << "Parent is black! (we're done!)" << endl;
+}
+//Parent is red (so it's not the root) and Uncle is red
+void correctCase3(Node* &current){
+  cout << "Parent is red! (Need to recolor and recurse)" << endl;
+}
+//Parent is red and Uncle is black (triangle and line)
+void correctCase4(Node* &current){
+  cout << "Parent is black! (Need to find out if it's the triangle or line case, then rotate)" << endl;
 }
