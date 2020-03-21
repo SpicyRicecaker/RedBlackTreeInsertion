@@ -153,8 +153,7 @@ void insert(Node* &current, int toAdd){
   //Root case
   if(current == NULL){
     current = new Node(toAdd);
-    //Set color to black, not in correct() cause I'm lazy
-    current->setColor(true);
+    correct(current);
     return;
   }
   //If number to add is greater than current node
@@ -166,10 +165,11 @@ void insert(Node* &current, int toAdd){
       insert(right, toAdd);
     }else{ //Otherwise, just add
       current->setRight(new Node(toAdd));
+      right = current->getRight();
       //Set parent 
-      current->getRight()->setParent(current);
+      right->setParent(current);
       //Might need to call correct here
-      correct(current);
+      correct(right);
     }
   }else{ //If number to add is less than or equal to current node
     Node* left = current->getLeft();
@@ -178,10 +178,11 @@ void insert(Node* &current, int toAdd){
       insert(left, toAdd);
     }else{ //Otherwise, just recurse
       current->setLeft(new Node(toAdd));
+      left = current->getLeft();
       //Set parent 
-      current->getLeft()->setParent(current);
+      left->setParent(current);
       //Might need to call correct here
-      correct(current);
+      correct(left);
     }
   }
 }
@@ -227,11 +228,11 @@ void print(Node* current, int depth){
   }
   //Set corresponding color
   if(current->getColor()){
-    //Red
-    cout << "\033[1;31m";
-  }else{
     //Black (but actually gold lol)
     cout << "\033[1;33m";
+  }else{
+    //Red (false)
+    cout << "\033[1;31m";
   }
   //Print node and reset color
   cout << current->getValue() << "\n" << endl;
@@ -246,17 +247,32 @@ void help(){
 
 //Root case
 void correctCase1(Node* &current){
-  cout << "Root case! (change color and we're done!)" << endl;
+  cout << current->getValue() << " is a ";
+  cout << "root case! (change color and we're done!)" << endl;
+  //Color black
+  current->setColor(true);
 }
 //Parent is black
 void correctCase2(Node* &current){
+  cout << current->getValue() << " is a ";
   cout << "Parent is black! (we're done!)" << endl;
+  return;
 }
 //Parent is red (so it's not the root) and Uncle is red
 void correctCase3(Node* &current){
-  cout << "Parent is red! (Need to recolor and recurse)" << endl;
+  Node* grandParent = current->getGrandParent();
+  cout << current->getValue() << " is a ";
+  cout << "Parent and uncle are red! (Need to recolor and recurse)" << endl;
+  //Change parent and uncle to black
+  current->getParent()->setColor(true);
+  current->getUncle()->setColor(true);
+  //Change grandparent to red
+  grandParent->setColor(false);
+  //Recursively call on grandparent
+  correct(grandParent);
 }
 //Parent is red and Uncle is black (triangle and line)
 void correctCase4(Node* &current){
+  cout << current->getValue() << " is a ";
   cout << "Parent is black! (Need to find out if it's the triangle or line case, then rotate)" << endl;
 }
