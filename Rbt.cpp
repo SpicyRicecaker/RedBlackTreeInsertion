@@ -278,15 +278,26 @@ void correctCase4(Node* &current){
   cout << "Parent is black! (Need to find out if it's the triangle or line case, then rotate)" << endl;
 
   Node* parent = current->getParent();
+  Node* grandParent = current->getGrandParent();
   //First check if it is a triangle (left side)
-  if(current->getGrandParent()->getLeft() == parent && parent->getRight() == current){
+  if(grandParent->getLeft() == parent && parent->getRight() == current){
     //Then we need to do a left rotation through the parent
     rotateLeft(parent);
     
     //Then check if it is a triangle (right side)
-  }else if(current->getGrandParent()->getRight() == parent && parent->getLeft() == current){
+  }else if(grandParent->getRight() == parent && parent->getLeft() == current){
     //Then we need to do a right rotation through the parent
     rotateRight(parent);
+  }
+  //Then we need to check if it is a line (left side)
+  if(grandParent->getLeft() == parent && parent->getLeft() == current){
+    //Then we need to rotate the grandparent, in the opposite direction (in this case, right)
+    rotateRight(grandParent);
+  }
+  //Then check if it is a line (right side)
+  else if(grandParent->getRight() == parent && parent->getRight() == current){
+    //Then we need to rotate the grandparent, in the opposite direction (in this case, left)
+    rotateLeft(grandParent);
   }
 }
 
