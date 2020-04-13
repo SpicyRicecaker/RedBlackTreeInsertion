@@ -19,6 +19,9 @@ class Node {
   Node* getUncle();
   bool getColor();
   void setColor(bool);
+  void reverseColor();
+  void rotateLeft();
+  void rotateRight();
  private:
   //Value
   int value;

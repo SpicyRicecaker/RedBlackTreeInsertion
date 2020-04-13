@@ -11,7 +11,8 @@ void correct(Node* &current); //Corrects the added node TODO
 void correctCase1(Node* &current); //Root case
 void correctCase2(Node* &current); //Parent is black
 void correctCase3(Node* &current); //Parent is red (so it's not the root) and Uncle is red
-void correctCase4(Node* &current); //Parent is red and Uncle is black (triangle and line)
+void correctCase4(Node* &current); //Parent is red and Uncle is black, triangle case 
+void correctCase4Step2(Node* &current) //Paren is red and Uncle is black, line case
 void rotateRight(Node* &current); //Takes in the node at which the subtrees will revolve around and tries to rotate right
 void rotateLeft(Node* &current); //Takes in the node at which the subtrees will revolve around and tries to rotate left
 void add(Node* current, char* in); //Enter a number, which gets insert()ed into tree
@@ -203,7 +204,7 @@ void correct(Node* &current){
     correctCase3(current);
     //This is when the uncle is black
   }else{
-      correctCase4(current);
+    correctCase4(current);
   }
   return;
 }
@@ -275,89 +276,41 @@ void correctCase3(Node* &current){
 //Parent is red and Uncle is black (triangle and line)
 void correctCase4(Node* &current){
   cout << current->getValue() << " is a ";
-  cout << "Parent is black! (Need to find out if it's the triangle or line case, then rotate)" << endl;
+  cout << "Parent is red, uncle is black! (Need to find out if it's the triangle or line case, then rotate)" << endl;
 
   Node* parent = current->getParent();
   Node* grandParent = current->getGrandParent();
   //First check if it is a triangle (left side)
   if(grandParent->getLeft() == parent && parent->getRight() == current){
+    cout << "Triangle, We're rotating left" << endl;
     //Then we need to do a left rotation through the parent
-    rotateLeft(parent);
+    parent->rotateLeft();
     
     //Then check if it is a triangle (right side)
   }else if(grandParent->getRight() == parent && parent->getLeft() == current){
+    cout << "Triangle, We're rotating right" << endl;
     //Then we need to do a right rotation through the parent
-    rotateRight(parent);
+    parent->rotateRight();
   }
+
+  Node* t = current;
+  correctCase4Step2(t);
+}
+
+//The pseudocode here takes inspiration from ...
+void correctCase4Step2(Node* &current){
+  Node* parent = current->getParent();
+  Node* grandParent = current->getGrandParent();
   //Then we need to check if it is a line (left side)
   if(grandParent->getLeft() == parent && parent->getLeft() == current){
+    cout << "Line, We're rotating right" << endl;
     //Then we need to rotate the grandparent, in the opposite direction (in this case, right)
-    rotateRight(grandParent);
+    grandParent->rotateRight();
   }
   //Then check if it is a line (right side)
   else if(grandParent->getRight() == parent && parent->getRight() == current){
+    cout << "Line, We're rotating left" << endl;
     //Then we need to rotate the grandparent, in the opposite direction (in this case, left)
-    rotateLeft(grandParent);
-  }
-}
-
-//Rotates left from subtree... how do we update the root????????? A function that traces back until the parent is null, perhaps
-void rotateLeft(Node* &root){
-  Node* parent = root->getParent();
-  Node* pivot = root->getRight();
-  Node* leftSubtree = pivot->getLeft();
-  //So the right pivot becomes the root's parent
-  pivot->setLeft(root);
-  root->setParent(pivot);
-  //Then the pivot's left subtree becomes the root's new right subtree
-  root->setRight(leftSubtree);
-  //To connect up the parent, first make sure that it's not the root
-  if(parent != NULL){
-    //If the root was the left subtree
-    if(parent->getLeft() == root){
-      //Set the parent's left to the pivot
-      parent->setLeft(pivot);
-      //If the root was the right subtree
-    }else{
-      //Set the parent's right to the pivot
-      parent->setRight(pivot);
-    }
-    //And finally, the pivot's parent to the parent
-    pivot->setParent(parent);
-    //Otherwise make it the null case, we need someway to update the root tho...
-  }else{
-    pivot->setParent(NULL);
-  }
-}
-
-//Rotates right from subtree
-void rotateRight(Node* &root){
-  Node* parent = root->getParent();
-  Node* pivot = root->getLeft();
-  Node* rightSubtree = pivot->getRight();
-  //So the left pivot becomes the root's parent
-  pivot->setRight(root);
-  root->setParent(pivot);
-  //Then the pivot's right subtree becomes the root's new left subtree
-  root->setLeft(rightSubtree);
-  //To connect up the parent, first make sure that it's not the root
-  if(parent != NULL){
-    //If the root was the left subtree
-    if(parent != NULL){
-      //If the root was the left subtree
-      if(parent->getLeft() == root){
-        //Set the parent's left to the pivot
-        parent->setLeft(pivot);
-        //If the root was the right subtree
-      }else{
-        //Set the parent's right to the pivot
-        parent->setRight(pivot);
-      }
-      //And finally, the pivot's parent to the parent
-      pivot->setParent(parent);
-      //Otherwise make it the null case, we need someway to update the root tho...
-    }else{
-      pivot->setParent(NULL);
-    }
+    grandParent->rotateLeft();
   }
 }
