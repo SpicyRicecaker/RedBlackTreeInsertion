@@ -13,7 +13,7 @@ Node::Node(int newValue){
 
 //Destructor
 Node::~Node(){
-  //Nothing to do here apparently
+  //Nothing to do here cause we stopped using int*
 }
 
 //Getters and setters for value
@@ -64,6 +64,7 @@ Node* Node::getGrandParent(){
 }
 
 //Getters for uncle
+//This is pretty scuffed. In RBT deletion we'll swap from this to parent get sibling
 Node* Node::getUncle(){
   Node* grandParent = this->getGrandParent();
   //If the grandparent isn't null
@@ -88,6 +89,7 @@ void Node::setColor(bool newColor){
   color = newColor;
 }
 
+//Not needed for now, might be needed later
 void Node::reverseColor(){
   color = !color; 
 }
@@ -129,7 +131,7 @@ void Node::rotateLeft(){
   }
 }
 
-//Right Rotate (WIP, change from left to right)
+//Right Rotate 
 void Node::rotateRight(){
   //Remember the pivot's left subtree
   Node* rightSubtree = NULL;

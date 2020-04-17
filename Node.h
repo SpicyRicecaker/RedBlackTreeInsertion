@@ -14,12 +14,12 @@ class Node {
   void setRight(Node*);
   Node* getParent();
   void setParent(Node*);
-  //Not sure if we need getters and setters for the grandparent and uncle
   Node* getGrandParent();
   Node* getUncle();
   bool getColor();
   void setColor(bool);
   void reverseColor();
+  //The reason for using classes
   void rotateLeft();
   void rotateRight();
  private:

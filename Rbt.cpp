@@ -3,12 +3,12 @@
 #include <fstream>
 #include "Node.h"
 
-void getInput(char* in); //Gets console input, stores into in
-void read(Node* &root, char* in); //Gets file input, stores into in, sequentially adds into rbt
-int getAction(char* in); //Gets input and decides on a specific number corresponding to an action
+void getInput(char* in); //Gets console input, stores into char* in
+void read(Node* &root, char* in); //Gets file input, stores into char* in, sequentially adds into rbt
+int getAction(char* in); //Gets input and returns a specific number corresponding to an action
 void insert(Node* &root, int toAdd); //Insert int into tree 
 void find(Node* &current, int toAdd); //Actually finds the place to insert node 
-void correct(Node* &current); //Corrects the added node TODO
+void correct(Node* &current); //Corrects added node to satisfy RBT properties
 void correctCase1(Node* &current); //Root case
 void correctCase2(Node* &current); //Parent is black
 void correctCase3(Node* &current); //Parent is red (so it's not the root) and Uncle is red
@@ -29,7 +29,7 @@ int main(){
   //Root node of the red black tree
   Node* root = NULL;
 
-  //We should have a program loop
+  //Program loop
   bool running = true;
   while(running){
     //Ask user for their file name input, and input into tree
@@ -41,28 +41,28 @@ int main(){
     while(moddingTree){
       //Ask the user what they want to do. 
       switch(getAction(in)){
-        //Add
       case 2:
+        //Add
         add(root, in);
         break;
-        //Print
       case 3:
+        //Print
         print(root, 0);
-        //Reset text color
+        //Reset text color after print
         cout << "\033[0m\n" << endl;
         break;
-        //Help
       case 4:
         //Print list of commands
         help();
         break;
-        //Quit
       case 5:
+        //Quit
         cout << "Thank you for choosing bubbles!" << endl;
         moddingTree = false;
         break;
       }
     }
+    //Prompt user if they want to start the program over
     cout << "Would you like to create another tree? (y/n)" << endl;
     while(true){
       getInput(in);
@@ -81,7 +81,7 @@ int main(){
   return 0;
 }
 
-//This function takes in user input and sets the in variable equal to it
+//This function takes in user input and sets the char* in variable equal to it
 void getInput(char* in){
   while(true){
     cin.getline(in, 999);
@@ -95,15 +95,20 @@ void getInput(char* in){
 
 //This function asks for file input name and sets the in variable equal to it
 void read(Node* &root, char* in){
+  //New file strem
   ifstream stream;
   while(true){
     cout << "Please enter the name of your file." << endl;
     getInput(in);
+    //Open file
     stream.open(in);
+    //Make sure that the file name is correct
     if(stream.good()){
+      //If so, read and put into in
       stream.getline(in, 999);
       break;
     }
+    //Otherwise do over
     cout << "File not found. Please make sure your file name is correct." << endl;
   }
   //Split input, convert into int, then call insertion
@@ -200,26 +205,27 @@ void find(Node* &current, int toAdd){
 }
 
 
-//Tries to repair the tree after the insertion
+//Tries to repair the tree after the insertion, inspiration for correct cases from wikipedia: "https://en.wikipedia.org/wiki/Red%E2%80%93black_tree"
 void correct(Node* &current){
   //New nodes are always inserted as red (false)
 
-  //This is the root case
   if(current->getParent() == NULL){
+    //This is the root case
     correctCase1(current);
-    //This is when the parent is black
   }else if(current->getParent()->getColor()){
+    //This is when the parent is black
     correctCase2(current);
-    //This is when the uncle is red
   }else if(current->getUncle() != NULL && current->getUncle()->getColor() == false){
+    //This is when the uncle is red
     correctCase3(current);
-    //This is when the uncle is black
   }else{
+    //This is when the uncle is black
     correctCase4(current);
   }
   return;
 }
 
+//This function takes user input, converts it to a number, and calls insert
 void add(Node* &root, char* in){
   cout << "Ok, please enter the number that you would like to add." << endl;
   getInput(in);
@@ -260,26 +266,25 @@ void help(){
 
 //Root case
 void correctCase1(Node* &current){
-  cout << current->getValue() << " is a ";
-  cout << "root case! (change color and we're done!)" << endl;
+  //cout << current->getValue() << " is a ";
+  //cout << "root case! (change color and we're done!)" << endl;
   //Color black
   current->setColor(true);
 }
 //Parent is black
 void correctCase2(Node* &current){
-  cout << current->getValue() << " is a ";
-  cout << "Parent is black! (we're done!)" << endl;
+  //cout << current->getValue() << " is a ";
+  //cout << "Parent is black! (we're done!)" << endl;
   return;
 }
 //Parent is red (so it's not the root) and Uncle is red
 void correctCase3(Node* &current){
   Node* grandParent = current->getGrandParent();
-  cout << current->getValue() << " is a ";
-  cout << "Parent and uncle are red! (Need to recolor and recurse)" << endl;
+  //cout << current->getValue() << " is a ";
+  //cout << "Parent and uncle are red! (Need to recolor and recurse)" << endl;
   //Change parent and uncle to black
   current->getParent()->setColor(true);
   current->getUncle()->setColor(true);
-  cout << "Uncle is:" << current->getUncle()->getValue() << endl;
   //Change grandparent to red
   grandParent->setColor(false);
   //Recursively call on grandparent
@@ -287,20 +292,20 @@ void correctCase3(Node* &current){
 }
 //Parent is red and Uncle is black (triangle and line)
 void correctCase4(Node* &current){
-  cout << current->getValue() << " is a ";
-  cout << "Parent is red, uncle is black! (Need to find out if it's the triangle or line case, then rotate)" << endl;
+  //cout << current->getValue() << " is a ";
+  //cout << "Parent is red, uncle is black! (Need to find out if it's the triangle or line case, then rotate)" << endl;
 
   Node* parent = current->getParent();
   Node* grandParent = current->getGrandParent();
   //First check if it is a triangle (left side)
   if(grandParent->getLeft() == parent && parent->getRight() == current){
-    cout << "Triangle, We're rotating left" << endl;
+    //cout << "Triangle, We're rotating left" << endl;
     //Then we need to do a left rotation through the parent
     parent->rotateLeft();
     current = current->getLeft();
     //Then check if it is a triangle (right side)
   }else if(grandParent->getRight() == parent && parent->getLeft() == current){
-    cout << "Triangle, We're rotating right" << endl;
+    //cout << "Triangle, We're rotating right" << endl;
     //Then we need to do a right rotation through the parent
     parent->rotateRight();
     current = current->getRight();
@@ -311,24 +316,22 @@ void correctCase4(Node* &current){
   correctCase4Step2(t);
 }
 
-//The pseudocode here takes inspiration from wikipedia
 void correctCase4Step2(Node* &current){
   Node* parent = current->getParent();
   Node* grandParent = current->getGrandParent();
   //Then we need to check if it is a line (left side)
   if(grandParent->getLeft() == parent && parent->getLeft() == current){
-    cout << "Line, We're rotating right" << endl;
+    //cout << "Line, We're rotating right" << endl;
     //Then we need to rotate the grandparent, in the opposite direction (in this case, right)
     grandParent->rotateRight();
   }
   //Then check if it is a line (right side)
   else if(grandParent->getRight() == parent && parent->getRight() == current){
-    cout << "Line, We're rotating left" << endl;
+    //cout << "Line, We're rotating left" << endl;
     //Then we need to rotate the grandparent, in the opposite direction (in this case, left)
     grandParent->rotateLeft();
   }
   //Recolor everything, swap parent and grandparent colors
-  //NOT SURE IF THIS RECOLORING IS GOOD OR NOT
   parent->setColor(true);
   grandParent->setColor(false);
 }
