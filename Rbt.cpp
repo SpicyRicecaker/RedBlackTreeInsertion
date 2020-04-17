@@ -313,4 +313,7 @@ void correctCase4Step2(Node* &current){
     //Then we need to rotate the grandparent, in the opposite direction (in this case, left)
     grandParent->rotateLeft();
   }
+  //Recolor everything
+  parent->reverseColor();
+  grandParent->reverseColor();
 }
