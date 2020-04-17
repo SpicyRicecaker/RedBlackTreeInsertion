@@ -12,9 +12,7 @@ void correctCase1(Node* &current); //Root case
 void correctCase2(Node* &current); //Parent is black
 void correctCase3(Node* &current); //Parent is red (so it's not the root) and Uncle is red
 void correctCase4(Node* &current); //Parent is red and Uncle is black, triangle case 
-void correctCase4Step2(Node* &current) //Paren is red and Uncle is black, line case
-void rotateRight(Node* &current); //Takes in the node at which the subtrees will revolve around and tries to rotate right
-void rotateLeft(Node* &current); //Takes in the node at which the subtrees will revolve around and tries to rotate left
+void correctCase4Step2(Node* &current); //Paren is red and Uncle is black, line case
 void add(Node* current, char* in); //Enter a number, which gets insert()ed into tree
 void print(Node* current, int depth); //Prints the tree
 void help(); //Prints list of commands
@@ -285,19 +283,21 @@ void correctCase4(Node* &current){
     cout << "Triangle, We're rotating left" << endl;
     //Then we need to do a left rotation through the parent
     parent->rotateLeft();
-    
+    current = current->getLeft();
     //Then check if it is a triangle (right side)
   }else if(grandParent->getRight() == parent && parent->getLeft() == current){
     cout << "Triangle, We're rotating right" << endl;
     //Then we need to do a right rotation through the parent
     parent->rotateRight();
+    current = current->getRight();
   }
 
+  //Then see if we need to consider the line case and rotate the grandparent
   Node* t = current;
   correctCase4Step2(t);
 }
 
-//The pseudocode here takes inspiration from ...
+//The pseudocode here takes inspiration from wikipedia
 void correctCase4Step2(Node* &current){
   Node* parent = current->getParent();
   Node* grandParent = current->getGrandParent();

@@ -124,28 +124,29 @@ void Node::rotateLeft(){
 //Right Rotate (WIP, change from left to right)
 void Node::rotateRight(){
   //Remember the pivot's left subtree
-  Node* leftSubtree = NULL;
-  if(left!=NULL){
-    leftSubtree = right->getLeft();
+  Node* rightSubtree = NULL;
+  if(right!=NULL){
+    //The right subtree is the pivot's right
+    rightSubtree = left->getRight();
   }
   //To connect up the parent, first make sure that it's not the root
   if(parent != NULL){
     //If the root was the left subtree
     if(parent->getLeft() == this){
       //Set the parent's left to the pivot
-      parent->setLeft(right);
+      parent->setLeft(left);
       //If the root was the right subtree
     }else{
       //Set the parent's right to the pivot
-      parent->setRight(right);
+      parent->setRight(left);
     }
     //Set the pivot's parent to the parent
-    right->setParent(parent);
-    //Set the root's parent to be the pivot (right)
-    right->setLeft(this);
-    parent = right;
+    left->setParent(parent);
+    //Set the root's parent to be the pivot (left)
+    left->setRight(this);
+    parent = left;
     //Then finally, the pivot's left subtree becomes the old root's new right subtree
-    right = leftSubtree;
+    left = rightSubtree;
   }else{
     //The root case
   }
