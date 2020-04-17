@@ -279,6 +279,7 @@ void correctCase3(Node* &current){
   //Change parent and uncle to black
   current->getParent()->setColor(true);
   current->getUncle()->setColor(true);
+  cout << "Uncle is:" << current->getUncle()->getValue() << endl;
   //Change grandparent to red
   grandParent->setColor(false);
   //Recursively call on grandparent

@@ -65,13 +65,14 @@ Node* Node::getGrandParent(){
 
 //Getters for uncle
 Node* Node::getUncle(){
+  Node* grandParent = this->getGrandParent();
   //If the grandparent isn't null
-  if(this->getGrandParent() != NULL){
+  if(grandParent != NULL){
     //Return the opposite of what isn't the parent of parent
-    if(this->getGrandParent()->getLeft() == this->getGrandParent()){
-      return this->getGrandParent()->getRight();
+    if(grandParent->getLeft() == parent){
+      return grandParent->getRight();
     }else{
-      return this->getGrandParent()->getLeft();
+      return grandParent->getLeft();
     }
   }
   return NULL;
@@ -118,6 +119,8 @@ void Node::rotateLeft(){
     right = leftSubtree;
   }else{
     //The root case
+    //Set the pivot's parent to NULL
+    right->setParent(NULL);
     //Set the root's parent to be the pivot (right)
     right->setLeft(this);
     parent = right;
@@ -154,6 +157,8 @@ void Node::rotateRight(){
     left = rightSubtree;
   }else{
     //The root case
+    //Set the pivot's parent to NULL
+    left->setParent(NULL);
     //Set the root's parent to be the pivot (left)
     left->setRight(this);
     parent = left;
