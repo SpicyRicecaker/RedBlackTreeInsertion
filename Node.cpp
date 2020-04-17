@@ -118,6 +118,11 @@ void Node::rotateLeft(){
     right = leftSubtree;
   }else{
     //The root case
+    //Set the root's parent to be the pivot (right)
+    right->setLeft(this);
+    parent = right;
+    //Then finally, the pivot's left subtree becomes the old root's new right subtree
+    right = leftSubtree;
   }
 }
 
@@ -149,5 +154,10 @@ void Node::rotateRight(){
     left = rightSubtree;
   }else{
     //The root case
+    //Set the root's parent to be the pivot (left)
+    left->setRight(this);
+    parent = left;
+    //Then finally, the pivot's left subtree becomes the old root's new right subtree
+    left = rightSubtree;
   }
 }

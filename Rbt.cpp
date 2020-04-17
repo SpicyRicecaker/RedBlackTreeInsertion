@@ -7,6 +7,7 @@ void getInput(char* in); //Gets console input, stores into in
 void read(Node* &root, char* in); //Gets file input, stores into in, sequentially adds into rbt
 int getAction(char* in); //Gets input and decides on a specific number corresponding to an action
 void insert(Node* &current, int toAdd); //Insert int into tree 
+void find(Node* &current, int toAdd); //Actually finds the place to insert node 
 void correct(Node* &current); //Corrects the added node TODO
 void correctCase1(Node* &current); //Root case
 void correctCase2(Node* &current); //Parent is black
@@ -150,6 +151,7 @@ int getAction(char* in){
 
 
 void insert(Node* &current, int toAdd){
+  find(current, toAdd);
   //Root case
   if(current == NULL){
     current = new Node(toAdd);
@@ -186,6 +188,11 @@ void insert(Node* &current, int toAdd){
     }
   }
 }
+
+void find(Node* &current, int toAdd){
+
+}
+
 
 //Tries to repair the tree after the insertion
 void correct(Node* &current){
@@ -313,7 +320,8 @@ void correctCase4Step2(Node* &current){
     //Then we need to rotate the grandparent, in the opposite direction (in this case, left)
     grandParent->rotateLeft();
   }
-  //Recolor everything
-  parent->reverseColor();
-  grandParent->reverseColor();
+  //Recolor everything, swap parent and grandparent colors
+  //NOT SURE IF THIS RECOLORING IS GOOD OR NOT
+  parent->setColor(true);
+  grandParent->setColor(false);
 }
